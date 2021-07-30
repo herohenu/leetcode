@@ -51,7 +51,7 @@ func FirstBadVersion(n int) int {
 		mid := l + (n-l)/2
 		if isBadVersion(mid) {
 
-			return mid
+			n = mid
 		} else {
 			l = mid + 1
 		}
