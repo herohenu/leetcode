@@ -36,18 +36,25 @@ func main() {
 	//root104 := leet.Init104Tree()
 	//fmt.Println(" max depth : ", leet.MaxDepth(root104))
 	//fmt.Println(" max depth : ", leet.MaxDepth(root))
-	node := leet.InitReverselist()
-	p := leet.ReverseList(node)
+	//node := leet.InitReverselist()
+	//p := leet.ReverseList(node)
 	//for node.Next != nil {
 	//	node = node.Next
 	//	fmt.Println("node.val :", node.Val)
 	//}
-	for p.Next != nil {
-		fmt.Println("p.val :", p.Val)
-		p = p.Next
-		//fmt.Println("p.val :", p.Val)
-	}
-	fmt.Println("p is:", p)
+	//for p.Next != nil {
+	//	fmt.Println("p.val :", p.Val)
+	//	p = p.Next
+	//	//fmt.Println("p.val :", p.Val)
+	//}
+	//fmt.Println("p is:", p)
+	//nums := []int{0, 1, 0, 3, 12}
+	//leet.MoveZeroes(nums)
+	//fmt.Println("--------->", nums)
+
+	arr := []byte{'h', 'e', 'l', 'l', 'o'}
+
+	leet.ReverseString(arr)
 
 }
 func m() {
