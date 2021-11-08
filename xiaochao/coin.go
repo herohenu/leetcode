@@ -13,22 +13,15 @@ var dict = make(map[int]int)
 func main() {
 	var coins = []int{1, 2, 5}
 	num := 13
-	//t0 := time.Now().UnixNano()
-	//result := dp(coins, num)
-	//t1 := time.Now().UnixNano()
-	//fmt.Println("result1 : ", result)
-	//fmt.Println("result1 cost: ", t1-t0)
-	//
-	//result = dpWithDict(coins, num)
-	//fmt.Println("result2 : ", result)
-	//
-	//t2 := time.Now().UnixNano()
-	//
-	//fmt.Println("dict : ", dict)
-	//fmt.Println("result2 cost: ", t2-t1)
+	result := dp(coins, num)
+	fmt.Println("dp() result1 : ", result)
+
+	result = dpWithDict(coins, num)
+	fmt.Println("dpWithDict() result2 : ", result)
+	fmt.Println("dict : ", dict)
 
 	result3 := getCoinChange(coins, num)
-	fmt.Println("result3 : ", result3)
+	fmt.Println("use for each result3 : ", result3)
 
 }
 
@@ -66,11 +59,15 @@ func dp(coins []int, n int) int {
 func dpWithDict(coins []int, n int) int {
 	//fmt.Println(" will exec n is :", n)
 	if n == 0 {
-
 		return 0
 	}
 	if n < 0 {
 		return -1
+	}
+
+	if v, ok := dict[n]; ok {
+		fmt.Printf("--- n =%d  use dict val： %d \n ", n, v)
+		return v
 	}
 	res := math.MaxInt32
 
@@ -95,6 +92,7 @@ func dpWithDict(coins []int, n int) int {
 }
 
 // 迭代法
+// 参考https://www.cnblogs.com/huangliang-hb/p/12608111.html
 func getCoinChange(coins []int, amount int) int {
 	res := make([]int, amount+1)
 	res[0] = 0
