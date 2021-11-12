@@ -100,7 +100,7 @@ func getCoinChange(coins []int, amount int) int {
 	for i := 1; i <= amount; i++ {
 		res[i] = math.MaxInt32
 	}
-	for i := 1; i < len(res); i++ {
+	for i := 0; i < len(res); i++ {
 		for _, coin := range coins {
 			if i-coin < 0 {
 				continue
