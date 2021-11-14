@@ -3,12 +3,13 @@ package main
 import "fmt"
 
 func main() {
-	l := build()
-	traVerse(l)
-	traVerse2(l)
-	l.Show()
-
-	buildListAndShow()
+	//l := build()
+	//traVerse(l)
+	//traVerse2(l)
+	//l.Show()
+	//
+	//buildListAndShow()
+	buildListAndShow2()
 }
 
 // 单链表的构建
@@ -42,8 +43,18 @@ func buildListAndShow() {
 	head.Show()
 
 }
+func buildListAndShow2() {
+	l := &ListNode{}
+	l.Insert2(2)
+	l.Insert2(4)
+	l.Insert2(6)
+	l.Insert2(8)
+	l.Show()
 
-// 单链表的插入
+}
+
+// 单链表的插入 只考虑插入 不考虑头节点空的情况（如果是整数，前面空节点int成了0）
+
 func (h *ListNode) Insert(val int) {
 	for h.next != nil {
 		h = h.next
@@ -51,9 +62,25 @@ func (h *ListNode) Insert(val int) {
 	h.next = &ListNode{Val: val}
 }
 
+// 单链表的插入
+func (p *ListNode) Insert2(val int) {
+
+	for p.next != nil {
+		p = p.next
+	}
+
+	p.next = &ListNode{Val: val}
+
+	//如果首节点为空的时候（val 用interface{}可判断空） 往前移动
+	if p.Val == nil {
+		p.Val = p.next.Val
+		p.next = p.next.next
+	}
+}
+
 // 定义基本的单链表结构
 type ListNode struct {
-	Val  int
+	Val  interface{}
 	next *ListNode
 }
 
