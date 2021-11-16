@@ -27,13 +27,13 @@ type DoubleList struct {
 
 // 在链表头部添加节点 x，时间 O(1)
 // refer: https://segmentfault.com/a/1190000020042196
-func (list *DoubleList) AddFirst(node Node) {
+func (list *DoubleList) AddFirst(node Node) bool {
 	if list == nil {
 		list = new(DoubleList)
 	}
 	if list.Size == 0 {
 		//false
-		return
+		return false
 	}
 	list.lock.Lock()
 	defer list.lock.Unlock()
@@ -44,14 +44,15 @@ func (list *DoubleList) AddFirst(node Node) {
 		list.Tail = &node
 	} else {
 		//头结点存在
-		list.Head.Next = &node
+		list.Head.Pre = &node
 		node.Next = list.Head
 
 		//设置新的头节点
-		list.Head = node
-
+		list.Head = &node
+		list.Head.Pre = nil
 	}
-
+	list.Size++
+	return true
 }
 
 // 删除链表中的 x 节点（x 一定存在）
