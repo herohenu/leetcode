@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
 	//l := build()
@@ -9,7 +12,9 @@ func main() {
 	//l.Show()
 	//
 	//buildListAndShow()
-	buildListAndShow2()
+	//buildListAndShow2()
+	ReverseList()
+
 }
 
 // 单链表的构建
@@ -106,9 +111,48 @@ func traVerse2(head *ListNode) {
 
 //对象的方法调用形式 展示单链表 l 就是头head
 func (l *ListNode) Show() {
-	fmt.Println("show :", l.Val)
+	fmt.Printf(" %d", l.Val)
 	for l.next != nil {
 		l = l.next
-		fmt.Println("show :", l.Val)
+		fmt.Printf(" %d", l.Val)
 	}
+	fmt.Println()
+}
+
+// 合并两个有序链表
+func MergeOrderLinkList(l1 ListNode, l2 ListNode) {
+
+}
+
+func ReverseList() {
+	l := build()
+	println("List build ok")
+	l.Show()
+
+	println("now reverse List :")
+	time.Sleep(1 * time.Second)
+	l = Reverse(l)
+	fmt.Println("after reverse List :")
+	l.Show()
+
+}
+
+//递归反转整个链表
+func Reverse(head *ListNode) *ListNode {
+	if head.next == nil {
+		return head
+	}
+	// debug info
+	fmt.Println("now Reverse head.val:", head.Val)
+	fmt.Println("now Reverse head.Nextis :")
+	head.next.Show()
+
+	//head 翻转之后 当做last
+	last := Reverse(head.next)
+	fmt.Println(" after Reverse last.Val:", last.Val)
+	last.Show()
+	head.next.next = head
+	head.next = nil
+
+	return last
 }
