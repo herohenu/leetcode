@@ -31,6 +31,7 @@ type DoubleList struct {
 
 // 在链表头部添加节点 x，时间 O(1)
 // refer: https://segmentfault.com/a/1190000020042196
+// node  必须使用指针
 func (list *DoubleList) AddFirst(node *Node) bool {
 	fmt.Println(" call Addfirst ... ", *node)
 	if list == nil {
@@ -70,6 +71,7 @@ func (list *DoubleList) AddFirst(node *Node) bool {
 
 // 删除链表中的 x 节点（x 一定存在）
 // 由于是双链表且给的是目标 Node 节点，时间 O(1)
+// node  必须使用指针 不然传入的是新的对象 找不到pre 会报错
 func (list *DoubleList) remove(node *Node) *Node {
 	fmt.Println(" 节点 被淘汰了: ", *node)
 	fmt.Println(" list will remove addr : ", &node)
@@ -156,8 +158,7 @@ func (cache LruCache) Put(key, val int) {
 
 	oldNode, ok := cache.HashMap[key]
 	if ok {
-		fmt.Println(" key  exists ", key)
-		fmt.Println(" key  exists ", cache.HashMap)
+		fmt.Printf(" key  exists %d , node : %+v", key, cache.HashMap)
 		//删除旧数据
 		cache.List.remove(oldNode)
 
@@ -194,6 +195,7 @@ func (cache LruCache) Get(key int) int {
 	return nodeVal.Val
 }
 
+// test lru
 func main() {
 	cache := NewLruCache(3)
 	cache.Put(1, 111)
