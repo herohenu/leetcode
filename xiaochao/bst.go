@@ -15,21 +15,31 @@ var arr []int
 
 func main() {
 	//生成树的叶子节点数量
-	nodeNum := 10
-	t := buildTreeWithRandom(nodeNum, 100)
-	fmt.Printf(" t is : %+v \n", t)
+	//nodeNum := 5
+	//t := buildTreeWithRandom(nodeNum, 100)
+	//fmt.Printf(" t is : %+v \n", t)
+	//traverse(t)
+	//for i := 0; i < nodeNum; i++ {
+	//	targetVal := arr[i]
+	//	fmt.Println("search val is : ", targetVal)
+	//	v := t.Search(targetVal)
+	//	fmt.Println("v is:  ", v.Val, "v.Left is:  ", v.Left, "v.Right is:  ", v.Right)
+	//}
+	//
+	//leftCount := Count(t.Left)
+	//fmt.Printf(" 左子树有 【%d】个几点\n", leftCount)
+	//rightCount := Count(t.Right)
+	//fmt.Printf(" 右子树有 【%d】个几点\n", rightCount)
+	arr = []int{8, 10, 11, 7, 6}
+	t := buildTreeUserInsert(arr)
+	fmt.Println(" 前序遍历...... ")
 	traverse(t)
-	for i := 0; i < nodeNum; i++ {
-		targetVal := arr[i]
-		fmt.Println("search val is : ", targetVal)
-		v := t.Search(targetVal)
-		fmt.Println("v is:  ", v.Val, "v.Left is:  ", v.Left, "v.Right is:  ", v.Right)
-	}
-
-	leftCount := Count(t.Left)
-	fmt.Printf(" 左子树有 【%d】个几点\n", leftCount)
-	rightCount := Count(t.Right)
-	fmt.Printf(" 右子树有 【%d】个几点\n", rightCount)
+	traverse2(t)
+	fmt.Println()
+	mirrorTree(t)
+	fmt.Println(" 镜像后遍历.... ")
+	traverse2(t)
+	fmt.Println()
 }
 
 type TreeNode struct {
@@ -40,9 +50,10 @@ type TreeNode struct {
 
 func buildTreeUserInsert(arr []int) *TreeNode {
 	t := new(TreeNode)
+	fmt.Printf("arr is %+v \n", arr)
 	for _, v := range arr {
 		node := &TreeNode{Val: v}
-		t.Insert(node)
+		t = t.Insert(node)
 	}
 	return t
 }
@@ -80,13 +91,14 @@ func (t *TreeNode) Insert(node *TreeNode) *TreeNode {
 	}
 	//插入到左侧
 	if t.Val > node.Val {
-		fmt.Printf(" root .val %d > node.val %d \n ", t.Val, node.Val)
+		fmt.Printf(" node.val %d < t.val %d  node insert left \n ", node.Val, t.Val)
 		if t.Left == nil {
 			t.Left = node
 		} else {
 			t.Left.Insert(node)
 		}
 	} else {
+		fmt.Printf(" node.val %d > t.val %d  ,node insert right \n ", node.Val, t.Val)
 		if t.Right == nil {
 			t.Right = node
 		} else {
@@ -143,7 +155,7 @@ func (t *TreeNode) Search(val int) *TreeNode {
 	}
 
 	if val == t.Val {
-		fmt.Println("找到了")
+		//fmt.Println("找到了")
 		return t
 	}
 	// 搜索的val 大于根节点的val 从右侧搜索
@@ -159,19 +171,21 @@ func (t *TreeNode) Search(val int) *TreeNode {
 
 func traverse(root *TreeNode) {
 	// 前序遍历
-	fmt.Println(" ", root.Val)
+	if root != nil {
+		fmt.Println(" ", root.Val)
+		traverse(root.Left)
+		traverse(root.Right)
+	}
+}
 
-	if root.Left == nil {
-
+func traverse2(root *TreeNode) {
+	// 前序遍历
+	if root == nil {
 		return
 	}
-
-	if root.Right == nil {
-		return
-	}
-
-	traverse(root.Left)
-	traverse(root.Right)
+	fmt.Printf(" %d **", root.Val)
+	traverse2(root.Left)
+	traverse2(root.Right)
 
 }
 
@@ -180,4 +194,20 @@ func Count(root *TreeNode) int {
 		return 0
 	}
 	return 1 + Count(root.Left) + Count(root.Right)
+}
+
+// 节点翻转
+func mirrorTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	fmt.Printf("root is %d ,left : %+v , right: %+v \n", root.Val, root.Left, root.Right)
+	tmpNode := root.Left
+	root.Left = root.Right
+	root.Right = tmpNode
+	//fmt.Println("now  inverse root.left", root.Left)
+	root.Left = mirrorTree(root.Left)
+	//fmt.Println("now  inverse root.Right", root.Right)
+	root.Right = mirrorTree(root.Right)
+	return root
 }
