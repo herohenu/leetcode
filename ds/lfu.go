@@ -42,6 +42,18 @@ type DoubleList struct {
 	Tail     *Node
 }
 
+func NewDoubleList(cap int) *DoubleList {
+	list := new(DoubleList)
+	//head := new(Node)
+	//tail := new(Node)
+	//list.Head = head
+	//list.Tail = tail
+	list.Head = list.Tail //init
+	list.Capacity = cap
+	list.lock = sync.RWMutex{}
+	return list
+}
+
 type LFUCache struct {
 	Key2Val   map[int]*Node       // key -> val 的映射
 	Key2Freq  map[int]int         // key -> req 的映射
@@ -65,6 +77,15 @@ func NewLFUCache(limit int) *LFUCache {
 	//cache.List.Capacity = limit
 	//cache.List.lock = new(sync.RWMutex)
 	return cache
+}
+func (list *DoubleList) Traverse() {
+	// 链表的遍历
+	keys := []int{}
+	cur := list.Head
+	for cur.Next != nil {
+		keys = append(keys, cur.Next.Key)
+		cur = cur.Next
+	}
 }
 
 // 在链表头部添加节点 x，时间 O(1)
@@ -111,7 +132,7 @@ func (list *DoubleList) AddFirst(node *Node) bool {
 // 由于是双链表且给的是目标 Node 节点，时间 O(1)
 // node  必须使用指针 不然传入的是新的对象 找不到pre 会报错
 func (list *DoubleList) remove(node *Node) *Node {
-	fmt.Println(" 节点 被淘汰了: ", *node)
+	fmt.Printf(" list remove node : %+v \n", *node)
 	fmt.Println(" list will remove addr : ", &node)
 	fmt.Println(" list head is : ", list.Head)
 	if node == list.Head {
@@ -174,85 +195,116 @@ func (list *DoubleList) removeLast() (node *Node) {
 	return node
 }
 
-func (cache *LFUCache) RemoveOldByFreqFromlist(node *Node) bool {
-	l := cache.Freq2Keys[node.Key] //获取老的频次对应的list
+// 移除最小频次的list 最后一个
+func (cache *LFUCache) RemoveMinFreqKey() bool {
+	l := cache.Freq2Keys[cache.MinFreq]
+	if l == nil {
+		fmt.Printf("error , minFreq is %d \n ", cache.MinFreq)
+	}
+
 	if l.Size == 0 {
 		fmt.Printf("RemoveOldByFreqFromlist 出错了\n")
 		return false
 	}
 
+	// todo ？？  need ?
 	if l.Size == 1 {
-		delete(cache.Freq2Keys, node.Key)
+		delete(cache.Freq2Keys, cache.MinFreq)
 		return true
 	}
 
-	t := l.remove(node)
-	fmt.Printf(" del  node from list is : %+v\n", t)
-	if t.Key != node.Key {
-		fmt.Printf("del error  delreal:  %+v ,  param node : %+v \n", t, node)
-	}
-	return true
+	//update key2FreqList
+	oldest := l.removeLast()
+	fmt.Printf("removeOld node is : %+v \n", oldest)
 
+	// update kv map ,delete old key
+
+	delete(cache.Key2Val, oldest.Key)
+	return true
 }
 
-func (cache *LFUCache) IncrKeyFreq(key int) int {
+func (cache *LFUCache) increaseFreq(key int) int {
 	//todo lock
-	freq := cache.Key2Freq[key] + 1
-	return freq
+	freq := cache.Key2Freq[key]
 
-	//cache.Freq2Keys //remove freq-> key ; and freq->list remove key
+	//cache.Key2Freq   update   √
+	cache.Key2Freq[key] = freq + 1
+
+	//kv not change √
+
+	// old freq 2 key list remove key
+	list := cache.Freq2Keys[freq]
+	node := cache.Key2Val[key]
+	list.remove(node)
+	if list.Size == 0 {
+		delete(cache.Freq2Keys, key)
+		// important!!!
+		if cache.MinFreq == freq {
+			cache.MinFreq++
+		}
+	}
+
+	// new freq 2key list add key
+	//这里一定是新的 还是需要判断??
+	newlist := cache.Freq2Keys[freq+1]
+	if newlist == nil {
+		newlist = NewDoubleList(cache.Cap)
+	}
+	newlist.AddFirst(node)
+	cache.Freq2Keys[freq+1] = newlist
+
+	return freq
 }
 
 // diff: https://blog.csdn.net/u014779917/article/details/107857521
 func (cache *LFUCache) Put(key, val int) {
-	//判断key 是否存
+	fmt.Printf("now put key %d ,val %d \n ", key, val)
 	_, ok := cache.Key2Val[key]
 	if ok {
-		//覆盖老的
+		//覆盖老的kv
 		cache.Key2Val[key] = &Node{Key: key, Val: val}
-		// freq +1
-		cache.IncrKeyFreq(key)
 
+		// keyreq ++
+
+		cache.increaseFreq(key) // freq +1
+
+		//old freq list remove this node
+		//l := cache.Freq2Keys[freq]
+		//if l != nil {
+		//	l.remove(oldNode)
+		//}
+		fmt.Printf("put sucess key: %d , val: %d  \n", key, val)
+		return
 	}
 
-	//todo 要对 list 初始化
-	//判断容量 是否满了
+	//判断容量 是否满了 满了就淘汰最老的
 	if cache.Size >= cache.Cap {
-		//淘汰老的freq 最小的
-
-		//如果是list  只有一个
-		list := cache.Freq2Keys[cache.MinFreq]
-		fmt.Printf("Freq2Keys size is %d \n  ", list.Size)
-		if list.Size == 1 {
-			delete(cache.Freq2Keys, cache.MinFreq)
-			// todo minfreq reset 0 ??
-			cache.MinFreq = 0
+		b := cache.RemoveMinFreqKey()
+		if b {
+			cache.Size--
+		} else {
+			fmt.Printf(" remove old fail ,return !!!!")
+			return
 		}
-
-		//如果是list 有多个 移除最后一个（oldest）
-		list.removeLast()
 	}
 
-	newNode := &Node{Key: key, Val: val}
 	// 然后重新放到 三个map
+	newNode := &Node{Key: key, Val: val}
 	cache.Key2Val[key] = newNode
+
+	//update key Freq Map
 	cache.MinFreq = 1
 	cache.Key2Freq[key] = cache.MinFreq
 
-	//todo list if exists
 	l := cache.Freq2Keys[cache.MinFreq]
 	if l == nil {
-		l = new(DoubleList)
+		l = NewDoubleList(cache.Cap)
+
 		l.AddFirst(newNode)
 	}
+	cache.Freq2Keys[cache.MinFreq] = l
 
-	//freq 要新建list
 	cache.Size++
-
-	//key
-
-	//放完成后 minfreq   和 size更新
-
 }
 
 // 获取的时候直接返回node 的val
@@ -264,12 +316,12 @@ func (cache *LFUCache) Get(key int) int {
 	}
 
 	//访问后 频次+1
-	newFreq := cache.IncrKeyFreq(key)
+	cache.increaseFreq(key)
 	//更新频次到key list映射表
-	cache.RemoveOldByFreqFromlist(node)
+	//cache.RemoveMinFreqKey() // todo old freq  key list remove this key
 
 	// 更新 key2freq 是否有必要？？
-	cache.Key2Freq[key] = newFreq
+	// cache.Key2Freq[key] = newFreq IncrKeyFreq
 
 	return node.Val
 }
