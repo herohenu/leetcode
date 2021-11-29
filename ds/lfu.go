@@ -177,10 +177,15 @@ func (list *DoubleList) removeHead() (node *Node) {
 }
 
 func (list *DoubleList) removeLast() (node *Node) {
-	if list.Tail == nil {
+	if list == nil || list.Tail == nil {
+		fmt.Printf(" list is nil %+v \n", list)
 		return node
 	}
 
+	if list.Tail == nil {
+		fmt.Printf(" list.tail is nil,list %+v \n", list)
+		return node
+	}
 	list.lock.Lock()
 	defer list.lock.Unlock()
 
@@ -199,7 +204,8 @@ func (list *DoubleList) removeLast() (node *Node) {
 func (cache *LFUCache) RemoveMinFreqKey() bool {
 	l := cache.Freq2Keys[cache.MinFreq]
 	if l == nil {
-		fmt.Printf("error , minFreq is %d \n ", cache.MinFreq)
+		fmt.Printf("RemoveMinFreqKey error , minFreq is %d \n ", cache.MinFreq)
+		return false
 	}
 
 	if l.Size == 0 {
@@ -235,8 +241,8 @@ func (cache *LFUCache) increaseFreq(key int) int {
 	// old freq 2 key list remove key
 	list := cache.Freq2Keys[freq]
 	node := cache.Key2Val[key]
-	list.remove(node)
-	if list.Size == 0 {
+	list.removeLast()
+	if list == nil || list.Size == 0 {
 		delete(cache.Freq2Keys, key)
 		// important!!!
 		if cache.MinFreq == freq {
@@ -264,15 +270,8 @@ func (cache *LFUCache) Put(key, val int) {
 		//覆盖老的kv
 		cache.Key2Val[key] = &Node{Key: key, Val: val}
 
-		// keyreq ++
-
 		cache.increaseFreq(key) // freq +1
 
-		//old freq list remove this node
-		//l := cache.Freq2Keys[freq]
-		//if l != nil {
-		//	l.remove(oldNode)
-		//}
 		fmt.Printf("put sucess key: %d , val: %d  \n", key, val)
 		return
 	}
@@ -339,4 +338,5 @@ func main() {
 	cache.Put(1, 1)
 	fmt.Println("key 2,val:  ", cache.Get(2))
 
+	fmt.Println("cache.size : ", cache.Size)
 }
