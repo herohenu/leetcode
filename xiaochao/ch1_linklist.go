@@ -13,8 +13,9 @@ func main() {
 	//
 	//buildListAndShow()
 	//buildListAndShow2()
-	ReverseList()
-
+	//ReverseList()
+	ReverseN1(1)
+	ReverseN1(2)
 }
 
 // 单链表的构建
@@ -114,7 +115,7 @@ func (l *ListNode) Show() {
 	fmt.Printf(" %d", l.Val)
 	for l.next != nil {
 		l = l.next
-		fmt.Printf(" %d", l.Val)
+		fmt.Printf("-> %d", l.Val)
 	}
 	fmt.Println()
 }
@@ -122,6 +123,18 @@ func (l *ListNode) Show() {
 // 合并两个有序链表
 func MergeOrderLinkList(l1 ListNode, l2 ListNode) {
 
+}
+
+func ReverseN1(n int) {
+	l := build()
+	fmt.Printf("ReverseN%d: List build ok", n)
+	l.Show()
+
+	fmt.Printf("ReverseN%d: now reverse List :\n", n)
+	time.Sleep(1 * time.Second)
+	l = reverseN(l, n)
+	fmt.Printf("ReverseN%d : after reverse List :\n", n)
+	l.Show()
 }
 
 func ReverseList() {
@@ -155,4 +168,23 @@ func Reverse(head *ListNode) *ListNode {
 	head.next = nil
 
 	return last
+}
+
+// 1129
+// 将链表的前 n 个节点反转（n <= 链表长度）
+//ListNode reverseN(ListNode head, int n)
+var successor *ListNode // 后驱节点
+func reverseN(head *ListNode, n int) *ListNode {
+	if n == 1 {
+		// 记录第n+1 个几点
+		successor = head.next
+		return head
+	}
+	//以head.next 为七点，翻转前n-1 个节点
+	last := reverseN(head.next, n-1)
+	head.next.next = head
+
+	head.next = successor
+	return last
+
 }
