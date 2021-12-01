@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"leetcode/leet"
+
 	"sync"
 	"time"
 )
@@ -34,7 +34,7 @@ func main() {
 	//}
 
 	arr := []int{-4, -1, 0, 3, 10}
-	leet.SortedSquares(arr)
+	SortedSquares(arr)
 
 }
 
@@ -42,7 +42,7 @@ func binarySearch() {
 	nums := []int{-1, 0, 3, 5, 9, 12}
 	for _, val := range nums {
 		target := 2
-		findidx := leet.Search(nums, target)
+		findidx := Search(nums, target)
 		fmt.Printf("varl %d idx is : %d  \n", val, findidx)
 	}
 	fmt.Printf(" done ..... ")

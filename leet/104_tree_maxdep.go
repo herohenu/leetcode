@@ -1,4 +1,4 @@
-package leet
+package main
 
 import "github.com/tal-tech/go-zero/core/mathx"
 
