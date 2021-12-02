@@ -1,4 +1,4 @@
-package main
+package leet
 
 func TwoSum(nums []int, target int) []int {
 	if len(nums) < 2 {
