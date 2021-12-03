@@ -38,7 +38,7 @@ package leet
 var nums []int
 var target int
 
-func main() {
+func FindTest() {
 	nums = []int{5, 7, 7, 8, 8, 10}
 	target = 8
 

@@ -1,14 +1,12 @@
 package leet
 
-import "github.com/tal-tech/go-zero/core/mathx"
-
 func maxDepth(root *TreeNode) int {
 
 	if root == nil {
 		return 0
 	}
 
-	return mathx.MaxInt(maxDepth(root.Left), maxDepth(root.Right)) + 1
+	return max(maxDepth(root.Left), maxDepth(root.Right)) + 1
 
 }
 
@@ -24,4 +22,12 @@ func Init104Tree() *TreeNode {
 	t2 := &TreeNode{Val: 2}
 	t1 := &TreeNode{Val: 1, Left: t2, Right: t3}
 	return t1
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	} else {
+		return b
+	}
 }

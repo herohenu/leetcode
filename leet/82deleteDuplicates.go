@@ -26,11 +26,3 @@ func deleteDuplicates(head *ListNode) *ListNode {
 
 	return cur
 }
-
-func main() {
-
-}
-
-func buildList() {
-
-}

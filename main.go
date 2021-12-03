@@ -52,9 +52,7 @@ func main() {
 	//leet.MoveZeroes(nums)
 	//fmt.Println("--------->", nums)
 
-	arr := []byte{'h', 'e', 'l', 'l', 'o'}
-
-	leet.ReverseString(arr)
+	leet.TestMergeTwoLists()
 
 }
 func m() {

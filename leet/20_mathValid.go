@@ -2,7 +2,6 @@ package leet
 
 import (
 	"container/list"
-	"fmt"
 )
 
 func isValid(s string) bool {
@@ -55,9 +54,4 @@ func isValid(s string) bool {
 	}
 
 	return true
-}
-
-func main() {
-	res := isValid("{[]{}")
-	fmt.Println(" res : ", res)
 }

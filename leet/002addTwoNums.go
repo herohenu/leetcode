@@ -18,7 +18,7 @@ Explanation: 342 + 465 = 807.
 
 */
 
-func main() {
+func AddSumTest() {
 	fmt.Println("-----------")
 	arr1 := []int{2, 4, 3}
 	arr2 := []int{5, 6, 4}
