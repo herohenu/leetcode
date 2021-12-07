@@ -1,10 +1,5 @@
 package leet
 
-import (
-	"fmt"
-	"time"
-)
-
 /*
 @Time: 2021-12-02 20:07
 @Desc:将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
@@ -12,62 +7,34 @@ import (
 
 */
 
+//参考： https://github.com/wx-satellite/learning-algorithm/tree/master/10_%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E6%9C%89%E5%BA%8F%E9%93%BE%E8%A1%A8
 func MergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
-	if l1 == nil {
-		return l2
-	}
 
-	if l2 == nil {
-		return l1
-	}
-	list := new(ListNode)
-	dumy := list
-	p1 := l1
-	p2 := l2
+	head := new(ListNode)
+	var cur = head
+
 	for {
-		if p1 == nil || p2 == nil {
-			fmt.Println("l1.next ", p1)
-			fmt.Println("l2.next ", p2)
+		if l1 == nil {
+			cur.Next = l2
 			break
 		}
-		fmt.Println("l1.val is: ", l1.Val)
-		fmt.Println("l2.val is: ", l2.Val)
-		time.Sleep(1)
-		if p1.Val < p2.Val {
-			time.Sleep(1)
-			fmt.Println(" l1.val < l2.val   ,list will point l1 ", l1.Val)
-			list.Next = p1
-
-			p1 = p1.Next
-			list = list.Next
-		} else if p1.Val > p2.Val {
-			time.Sleep(1)
-			fmt.Println(" l1.val > l2.val  ,l1.val :  ", l1.Val)
-			list.Next = p2
-			p2 = p2.Next
-			list = list.Next
-		} else {
-			time.Sleep(1)
-
-			list.Next = p1
-			p1 = p1.Next
-
-			list = list.Next //list->p1
-			list.Next = p2
-			p2 = p2.Next
-			//list = list.Next
+		if l2 == nil {
+			cur.Next = l1
+			break
 		}
 
+		if l1.Val < l2.Val {
+			cur.Next = l1
+			l1 = l1.Next
+		} else {
+			cur.Next = l2
+			l2 = l2.Next
+		}
+
+		cur = cur.Next
 	}
 
-	if l1.Next != nil {
-		list.Next = l1
-	}
-	if l2.Next != nil {
-		list.Next = l2
-	}
-
-	return dumy.Next
+	return head.Next
 
 }
 
