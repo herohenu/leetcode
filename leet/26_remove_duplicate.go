@@ -9,8 +9,8 @@ import "fmt"
 //来源：力扣（LeetCode）
 //链接：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array
 
-func main1() {
-	nums := []int{1, 1, 2, 3, 4}
+func Test21() {
+	nums := []int{1, 1, 1, 2, 3, 4}
 	removeDuplicates(nums)
 	fmt.Println(nums)
 }

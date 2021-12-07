@@ -52,7 +52,9 @@ func main() {
 	//leet.MoveZeroes(nums)
 	//fmt.Println("--------->", nums)
 
-	leet.TestMergeTwoLists()
+	//leet.TestMergeTwoLists()
+	//leet.Test21()
+	leet.TestThreeSum()
 
 }
 func m() {

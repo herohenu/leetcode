@@ -1,9 +1,5 @@
 package leet
 
-import (
-	"fmt"
-)
-
 /*
 @Time: 2021-12-02 20:07
 @Desc:将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
@@ -109,8 +105,6 @@ func MergeTwoLists3(l1 *ListNode, l2 *ListNode) *ListNode {
 
 	list := new(ListNode)
 	var cur = list
-	//fmt.Printf("cur is %+v \n", cur)
-	fmt.Printf("cur %p", cur)
 
 	p1 := l1
 	p2 := l2
