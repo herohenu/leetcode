@@ -7,24 +7,24 @@ import (
 
 func ThreeSum(nums []int) [][]int {
 	res := [][]int{}
-	//遍历排序数组；
-	//外层循环作为 第一个元素；
-	//内层循环  和末尾倒着 求和 计算和 看能否为0
+	m := make(map[string]bool)
 
-	//从小到大遍历这个数组，每次取一个元素，将这个元素的相反数设为target ok
 	sort.Ints(nums)
 	for i := 0; i < len(nums); i++ {
-
 		target := 0 - nums[i]
-
+		fmt.Println("now  i is : ", i)
 		j := i + 1
 		k := len(nums) - 1
+		//fmt.Printf(" now idx   j %d , k %d \n", j, k)
 		for j < k {
-
 			if nums[j]+nums[k] == target {
 				fmt.Println("solution element is : ", []int{nums[i], nums[j], nums[k]})
-				res = append(res, []int{nums[i], nums[j], nums[k]})
-				break
+				ijk := fmt.Sprintf("%d%d%d", nums[i], nums[j], nums[k])
+				fmt.Println("ijk is :", ijk)
+				if _, ok := m[ijk]; !ok {
+					m[ijk] = true
+					res = append(res, []int{nums[i], nums[j], nums[k]})
+				}
 			} else if nums[j]+nums[k] > target {
 				k--
 			} else {
@@ -38,7 +38,8 @@ func ThreeSum(nums []int) [][]int {
 }
 
 func ThreeSumMain() {
-	nums := []int{-1, 0, 1, 2, -1, -4}
+	nums := []int{-2, 0, 1, 1, 2}
+	// [[-2,0,2],[-2,1,1]]
 	sort.Ints(nums)
 	fmt.Println(nums)
 	res := ThreeSum(nums)

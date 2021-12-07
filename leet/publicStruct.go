@@ -47,9 +47,12 @@ func buildListWithNilNode(arr []int) *ListNode {
 //对象的方法调用形式 展示单链表 l 就是头head
 func (l *ListNode) Show() {
 	fmt.Printf(" %d", l.Val)
+	//fmt.Printf(" %d ,%p  ", l.Val, l)
+
 	for l.Next != nil {
 		l = l.Next
 		fmt.Printf("-> %d", l.Val)
+		//fmt.Printf("-> %d ,%p", l.Val, l)
 	}
 	fmt.Println()
 }
