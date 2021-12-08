@@ -37,11 +37,11 @@ func NewStack() *Stack {
 	return &Stack{nil, 0, &sync.RWMutex{}}
 }
 
-func (s Stack) Len() int {
+func (s *Stack) Len() int {
 	return s.Lenth
 }
 
-func (s Stack) Peek() interface{} {
+func (s *Stack) Peek() interface{} {
 	if s.Lenth == 0 {
 		return nil
 	}
@@ -49,23 +49,23 @@ func (s Stack) Peek() interface{} {
 	return s.Top.Value
 }
 
-func (s Stack) Pop() interface{} {
+func (s *Stack) Pop() interface{} {
 	s.lock.Lock()
 	defer s.lock.Unlock()
-
 	if s.Lenth == 0 {
 		return nil
 	}
 	n := s.Top
 	s.Top = s.Top.Front
-	s.Lenth--
+	s.Lenth -= 1
 	return n.Value
 }
 
-func (s Stack) Push(value interface{}) {
+func (s *Stack) Push(value interface{}) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	ele := &node{Value: value, Front: s.Top}
 	s.Top = ele
-	s.Lenth++
+	s.Lenth += 1
+	//fmt.Println(" push  len :", s.Lenth)
 }
