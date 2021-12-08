@@ -106,7 +106,7 @@ func (list *DoubleList) removeHead() (node *Node) {
 	list.lock.Lock()
 	defer list.lock.Unlock()
 
-	node = list.Tail
+	node = list.Head // todo ?
 	//判断尾的前一个是否存在
 	if node.Next != nil {
 		list.Head = node.Next
